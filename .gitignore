@@ -1,0 +1,8 @@
+build/
+tmp/
+*.uvguix.*
+*.bak
+*.dep
+*.d
+*.o
+
