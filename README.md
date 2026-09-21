@@ -54,11 +54,6 @@ EXTERNAL_LEDS_ACTIVE_LOW=1
 
 限流电阻属于 LED 的电气保护要求。题目未写不代表可以省略；无电阻直连不作为安全接法或实物验收结论。
 
-## 文档
-
-- `实验报告.md`：学习通提交用 Markdown。
-- `output/STM32F103C8T6_BluePill_流水灯实验报告.pdf`：学习通提交用 PDF。
-- `博客发布稿.md`：可直接粘贴至 CSDN、博客园等平台。
 
 ## 实物验证
 
