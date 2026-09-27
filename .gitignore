@@ -5,4 +5,15 @@ tmp/
 *.dep
 *.d
 *.o
-
+Objects/
+Listings/
+DebugConfig/
+keil_build.log
+*.uvoptx
+*.uvguix.*
+assets/
+output/
+博客发布稿.md
+实验报告.md
+scripts/build_evidence_collage.py
+scripts/build_report.py
