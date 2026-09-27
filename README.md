@@ -17,7 +17,7 @@
 | 3 | 外接 LED 3 | PB8 | 高 |
 | 4 | Blue Pill 板载 LED | PC13 | 低 |
 
-注意：照片中容易把 `PA15` 看成 `PA13`。PA13/PA14 是 SWD 下载接口，程序不会把它们改成普通 GPIO。PA15 默认是 JTAG JTDI，程序仅关闭 JTAG、保留 SWD。
+注意区分 `PA15` 和 `PA13`。PA13/PA14 是 SWD 下载接口，程序不会把它们改成普通 GPIO。PA15 默认是 JTAG JTDI，实验一的程序仅关闭 JTAG、保留 SWD。
 
 ## 打开和构建
 
