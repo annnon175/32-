@@ -23,7 +23,7 @@ IOC已通过CubeMX 6.18.1读入和保存。若重新生成，先选另一个目�
 
 打开相应 `_Simulator.uvprojx`，按Ctrl+F5进入软件仿真，View → Analysis Windows → Logic Analyzer。
 Setup添加 `PORTA & 0x0001`，Display Type选Bit。闪烁观察2s周期；PWM调整到毫秒尺度，观察约1ms周期。
-仿真副本选择STM32F103C8外设模型（DARMSTM.DLL）；需本机Keil带该模型。该配置尚未实际运行验证。
+仿真副本选择STM32F103C8外设模型（DARMSTM.DLL）；需本机Keil带该模型。2026-10-14该配置已实际运行，Logic Analyzer已取得PA0真实模型方波，截图瞬间PSC=63、ARR=999、CCR1=902。约1ms周期与1kHz参数相符，固定50%精确光标读数仍待补。
 若没有PORTA虚拟寄存器或TIM2模型，不要把 `g_ccr`、`g_duty`画出的曲线当PWM引脚波形。
 需检查Options for Target → Debug → Use Simulator，并确认器件模拟支持；报告中保留实际观察后的填写位置。
 
