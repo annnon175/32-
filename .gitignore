@@ -20,3 +20,6 @@ scripts/build_report.py
 
 # 串口实验需要保留调试器/Simulator选项
 !USART1串口实验/**/*.uvoptx
+
+# 保留定时器实验调试配置
+!TIM2定时器PWM实验/**/*.uvoptx
