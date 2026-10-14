@@ -17,7 +17,7 @@
 
 ## TIM2定时器与PWM实验
 
-工程在 [TIM2定时器PWM实验](TIM2定时器PWM实验/README.md)。含定时器中断闪烁和PWM呼吸灯两个独立HAL工程：PA0外接330Ω串联LED，完整亮灭周期2s；PWM为1kHz，呼吸周期约1.6s。
+工程在 [TIM2定时器PWM实验](TIM2定时器PWM实验/README.md)。含定时器中断闪烁和PWM呼吸灯两个独立HAL工程：PA0控制外接LED，完整亮灭周期2s；PWM为1kHz，呼吸周期约1.6s。
 GCC和Keil均编译通过，CubeMX配置已读入保存。两个固件已真实烧录、回读一致，用户确认LED闪烁和呼吸正常，Keil已观察到PA0 PWM仿真方波。
 
 ## 实验一引脚

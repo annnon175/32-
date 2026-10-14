@@ -7,7 +7,7 @@
 | 01_TIM2_Blink | 亮1秒、灭1秒；完整周期2秒 | [打开工程](01_TIM2_Blink/01_TIM2_Blink.uvprojx) |
 | 02_TIM2_PWM | 1kHz PWM，呼吸周期约1.6秒 | [打开工程](02_TIM2_PWM/02_TIM2_PWM.uvprojx) |
 
-PA0 → 330Ω电阻 → LED长脚；LED短脚 → GND。板载PC13灯没有TIM2 PWM复用，不用它代替本实验LED。
+PA0控制外接LED；LED短脚 → GND。板载PC13灯没有TIM2 PWM复用，不用它代替本实验LED。
 
 HSI 8MHz / 2 × 16 = 64MHz；APB1=32MHz，因APB1分频不为1，TIM2输入时钟=64MHz。
 闪烁PSC=63999、ARR=999，每1秒进入TIM2中断翻转GPIO；PWM PSC=63、ARR=999，频率1000Hz。

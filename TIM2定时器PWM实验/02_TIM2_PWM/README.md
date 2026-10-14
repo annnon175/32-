@@ -2,7 +2,7 @@
 
 TIM2_CH1从PA0输出1kHz PWM，平方亮度曲线每4ms更新一次，呼吸周期约1.6秒。
 
-接线：PA0 → 330Ω → LED长脚，LED短脚 → GND。板卡正常3.3V供电，BOOT0=0。
+接线：PA0控制外接LED，LED短脚 → GND。板卡正常3.3V供电，BOOT0=0。
 
 硬件下载打开同名.uvprojx，默认CMSIS-DAP；离线仿真打开_Simulator.uvprojx。
 
