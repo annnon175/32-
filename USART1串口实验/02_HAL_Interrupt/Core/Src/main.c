@@ -2,8 +2,9 @@
 #include "lab_config.h"
 
 UART_HandleTypeDef huart1;
+/* g_running: 1继续发，0暂停；下面的状态/计数也可在 Keil Watch 里看。 */
 volatile uint32_t g_running = 1U;
-volatile uint32_t g_tx_busy = 0U;
+volatile uint32_t g_tx_busy = 0U; /* 1表示上一行还没发完。 */
 volatile uint32_t g_tx_lines = 0U;
 volatile uint32_t g_rx_bytes = 0U;
 volatile uint32_t g_uart_errors = 0U;
@@ -11,10 +12,12 @@ volatile uint32_t g_fatal_error = 0U;
 static volatile uint32_t rx_retry = 0U;
 static uint8_t rx_byte;
 static uint8_t hello[] = "hello windows!\r\n";
+/* 不发送字符串末尾的 \0。 */
 #define LINE_BYTES (sizeof(hello) - 1U)
 
 static void SystemClock_Config(void);
 static void MX_USART1_UART_Init(void);
+/* 发送间隔开关在 lab_config.h；默认0毫秒。 */
 static uint32_t tx_due(uint32_t last)
 {
 #if TX_DELAY_MS > 0U
@@ -27,8 +30,11 @@ static uint32_t tx_due(uint32_t last)
 static void command(uint8_t ch)
 {
     ++g_rx_bytes;
-    if (ch == '#') g_running = 0U;
-    else if (ch == '*') g_running = 1U;
+    if (ch == '#') {
+        g_running = 0U;
+    } else if (ch == '*') {
+        g_running = 1U;
+    }
 }
 
 /* GCC 启动文件需要的初始化钩子。 */
@@ -42,8 +48,10 @@ int main(void)
     HAL_Init();
     SystemClock_Config();
     MX_USART1_UART_Init();
+    /* 先挂1字节接收；以后每收到1字节，回调会再挂下一次。 */
     if (HAL_UART_Receive_IT(&huart1, &rx_byte, 1U) != HAL_OK) Error_Handler();
     for (;;) {
+        /* 这两段是异常恢复：接收错误后重挂、发送超时后解除busy。 */
         if (rx_retry) {
             /* 接收出错后重新挂载，发送不受影响。 */
             uint32_t mask = __get_PRIMASK();
@@ -63,12 +71,14 @@ int main(void)
         }
         if (g_running && !g_tx_busy && tx_due(last_start)) {
             HAL_StatusTypeDef status;
+            /* g_running可能在中断里改变；启动下一行时短暂关中断。 */
             uint32_t mask = __get_PRIMASK();
             __disable_irq();
             /* 启动前再看一次，避免刚收到 # 又发出下一组数据。 */
             if (g_running && !g_tx_busy) {
                 g_tx_busy = 1U;
                 tx_started = last_start = HAL_GetTick();
+                /* 一次交给中断发送完整的16字节；这里不会等它发完。 */
                 status = HAL_UART_Transmit_IT(&huart1, hello, (uint16_t)LINE_BYTES);
                 if (status != HAL_OK) {
                     g_tx_busy = 0U;
@@ -105,6 +115,7 @@ static void SystemClock_Config(void)
 
 static void MX_USART1_UART_Init(void)
 {
+    /* USART1: PA9发、PA10收；115200、8N1。 */
     huart1.Instance = USART1;
     huart1.Init.BaudRate = UART_BAUD;
     huart1.Init.WordLength = UART_WORDLENGTH_8B;
@@ -120,6 +131,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *uart)
 {
     GPIO_InitTypeDef gpio = {0};
     if (uart->Instance != USART1) return;
+    /* 除GPIO外，还要打开USART1中断，接收/发送完成才能进回调。 */
     __HAL_RCC_AFIO_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_USART1_CLK_ENABLE();
@@ -138,6 +150,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *uart)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *uart)
 {
     if (uart->Instance != USART1) return;
+    /* 收到 # 暂停，收到 * 继续；马上准备接收下一个命令。 */
     command(rx_byte);
     if (HAL_UART_Receive_IT(uart, &rx_byte, 1U) != HAL_OK) rx_retry = 1U;
 }
@@ -145,6 +158,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *uart)
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *uart)
 {
     if (uart->Instance != USART1) return;
+    /* 本行最后一个字节发完，主循环才可以启动下一行。 */
     ++g_tx_lines;
     g_tx_busy = 0U;
 }
