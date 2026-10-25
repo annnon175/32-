@@ -23,3 +23,6 @@ scripts/build_report.py
 
 # 保留定时器实验调试配置
 !TIM2定时器PWM实验/**/*.uvoptx
+
+# OLED实验保留下载及Simulator选项
+!OLED_I2C实验/**/*.uvoptx
